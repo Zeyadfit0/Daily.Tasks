@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title> Daily tasks </title>
+  <title>Daily Tasks 💫</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="manifest" href="manifest.json">
 
@@ -49,7 +49,7 @@
 <body>
   <div class="app">
     <div class="header">
-      <h1> Daily Tasks 💫 </h1>
+      <h1>Daily Tasks 💫</h1>
       <button class="toggle" onclick="toggleDark()">🌙</button>
     </div>
 
@@ -113,6 +113,19 @@
     function save() {
       localStorage.setItem('monthlyData', JSON.stringify(data));
       localStorage.setItem('dark', document.body.classList.contains('dark'));
+      localStorage.setItem('lastSelection', JSON.stringify({
+        month: document.getElementById('monthSelect').value,
+        week: document.getElementById('weekSelect').value,
+        day: document.getElementById('daySelect').value
+      }));
+    }
+
+    // استرجاع آخر اختيار
+    const last = JSON.parse(localStorage.getItem('lastSelection'));
+    if (last) {
+      document.getElementById('monthSelect').value = last.month;
+      document.getElementById('weekSelect').value = last.week;
+      document.getElementById('daySelect').value = last.day;
     }
 
     function render() {
