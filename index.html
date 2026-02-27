@@ -164,33 +164,52 @@
       updateProgress();
     }
 
-    function addTask(){
-      const month = document.getElementById('monthSelect').value;
-      const week = document.getElementById('weekSelect').value;
-      const day = document.getElementById('daySelect').value;
-      const input = document.getElementById('taskInput');
-      if(!input.value.trim()) return;
+   function addTask(){
+  const month = document.getElementById('monthSelect').value;
+  const week = document.getElementById('weekSelect').value;
+  const day = document.getElementById('daySelect').value;
+  const input = document.getElementById('taskInput');
+  if(!input.value.trim()) return;
 
-      if(!data.months[month]) data.months[month] = {};
-      if(!data.months[month][week]) data.months[month][week] = {};
-      if(!data.months[month][week][day]) data.months[month][week][day] = [];
-      data.months[month][week][day].push({text: input.value, done:false});
-      input.value='';
-      save();
-      render();
-    }
+  if(!data.months[month]) data.months[month] = {};
+  if(!data.months[month][week]) data.months[month][week] = {};
+  if(!data.months[month][week][day]) data.months[month][week][day] = [];
 
-    function finishTask(i, month, week, day) {
+  const tasks = data.months[month][week][day];
+  const newTask = { text: input.value, done: false };
+  input.value = '';
+
+  // حط التاسك الجديد قبل أي Done
+  const firstDoneIndex = tasks.findIndex(t => t.done);
+  if (firstDoneIndex === -1) {
+    tasks.push(newTask);
+  } else {
+    tasks.splice(firstDoneIndex, 0, newTask);
+  }
+
+  save();
+  render();
+}
+
+  function finishTask(i, month, week, day) {
   const tasks = data.months[month][week][day];
   const task = tasks[i];
 
   task.done = !task.done;
 
+  // لو خلاصت → نزله تحت كل الـ Done
   if (task.done) {
-    // شيل التاسك من مكانه
     tasks.splice(i, 1);
-    // نزله تحت خالص
     tasks.push(task);
+  } else {
+    // لو رجع Not Done → حطه فوق كل الـ Done
+    tasks.splice(i, 1);
+    const firstDoneIndex = tasks.findIndex(t => t.done);
+    if (firstDoneIndex === -1) {
+      tasks.push(task);
+    } else {
+      tasks.splice(firstDoneIndex, 0, task);
+    }
   }
 
   save();
